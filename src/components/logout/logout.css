@@ -1,0 +1,38 @@
+.logout {
+    position: fixed;
+    top: 40px;
+    right: 10px;
+    z-index: 999;
+    height: 240px;
+    width: 210px;
+    background-color: #fffffff3;
+    border-radius: 5px;
+}
+
+.logoutContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 50px;
+    padding: 30px;
+}
+
+.logoutOptions {
+    list-style: none;
+    margin: 0;
+    padding: 0px 10px;
+}
+
+.logoutOptions>li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border-bottom: 1px solid lightgrey;
+    cursor: pointer;
+}
+
+.logoutOptions>li>a {
+    display: flex;
+    gap: 10px;
+}
