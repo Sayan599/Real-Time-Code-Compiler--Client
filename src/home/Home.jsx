@@ -8,7 +8,7 @@ import Button from '@mui/material/Button';
 import SelectSmall from '../components/select/SelectSmall';
 import InputSlider from '../components/slider/InputSlider';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { TextField } from '@mui/material';
+import { Fade, Slide, TextField } from '@mui/material';
 import Logout from '../components/logout/Logout';
 import { useLocation } from 'react-router-dom';
 import Snackbar from '@mui/material/Snackbar';
@@ -31,9 +31,8 @@ console.log("Conection done");
 
 function Home() {
 
-
-
     const [open, setOpen] = React.useState(false);
+    const [opennew, setOpennew] = React.useState(false);
 
     const [code, setCode] = useState("");
     const [title, setTitle] = useState("");
@@ -176,7 +175,13 @@ function Home() {
 
     const handleJoinRoom = () => {
         console.log("join");
-        socket.emit("join-room", room)
+        try {
+            socket.emit("join-room", room);
+            setOpennew(true);
+        } catch (err) {
+            console.log(err);
+        }
+
     }
 
 
@@ -267,6 +272,12 @@ function Home() {
                     Saved successfully
                 </Alert>
             </Snackbar>
+            <Snackbar TransitionComponent={Slide} open={opennew} autoHideDuration={2000} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
+                <Alert onClose={handleClose} severity="info" sx={{ width: '200%' }}>
+                    You are successfully to Room {room}
+                </Alert>
+            </Snackbar>
+
         </div>
     )
 }
