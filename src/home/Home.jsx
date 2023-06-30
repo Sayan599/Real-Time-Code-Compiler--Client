@@ -33,6 +33,7 @@ function Home() {
 
     const [open, setOpen] = React.useState(false);
     const [opennew, setOpennew] = React.useState(false);
+    const [openerror, setOpenerror] = useState(false);
 
     const [code, setCode] = useState("");
     const [title, setTitle] = useState("");
@@ -53,7 +54,7 @@ function Home() {
 
     const [room, setRoom] = useState("");
 
-    const { user, dispatch, isFetching } = useContext(Context);
+    const { user, dispatch, roomID, isFetching } = useContext(Context);
 
 
     useEffect(() => {
@@ -105,6 +106,8 @@ function Home() {
         }
 
         setOpen(false);
+        setOpennew(false);
+        setOpenerror(false);
     };
 
     const languages = [
@@ -176,16 +179,23 @@ function Home() {
     const handleJoinRoom = () => {
         console.log("join");
         try {
+            dispatch({ type: "ROOMIN", payload: room });
             socket.emit("join-room", room);
             setOpennew(true);
         } catch (err) {
-            console.log(err);
+
         }
 
     }
 
+    const handleLeaveRoom = () => {
+        setOpenerror(true);
+        dispatch({ type: "ROOMOUT" });
+    }
 
-    socket.emit("send_message", { message: code }, room);
+    socket.emit("send_message", { message: code }, roomID);
+
+    console.log("roomID" + roomID);
 
     useEffect(() => {
         socket.on("receive_message", (data) => {
@@ -237,10 +247,13 @@ function Home() {
                             </div>
                             <textarea disabled="true" className="consoleArea" style={{ fontSize: `${fontSizeConsole}px` }} placeholder={answer}></textarea>
                             <div className="roomBox">
-                                <label for="roomId" style={{ marginBottom: "20px", letterSpacing: "2px" }}>Room Id : </label>
-                                <input type="number" onChange={(e) => setRoom(e.target.value)}></input>
+                                <label for="roomId" style={{ marginBottom: "5px", letterSpacing: "2px" }}>Room Id : </label>
+                                <input type="number" style={{ height: "40px", textAlign: "center" }} onChange={(e) => setRoom(e.target.value)}></input>
                                 <Button type="submit" variant="contained" style={{ backgroundColor: "green" }} onClick={handleJoinRoom}>
                                     JOIN ROOM
+                                </Button>
+                                <Button type="submit" variant="contained" style={{ scale: "80%", backgroundColor: "red" }} onClick={handleLeaveRoom}>
+                                    Leave
                                 </Button>
                             </div>
                         </div>
@@ -275,6 +288,11 @@ function Home() {
             <Snackbar TransitionComponent={Slide} open={opennew} autoHideDuration={2000} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
                 <Alert onClose={handleClose} severity="info" sx={{ width: '200%' }}>
                     You are successfully to Room {room}
+                </Alert>
+            </Snackbar>
+            <Snackbar TransitionComponent={Slide} open={openerror} autoHideDuration={2000} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
+                <Alert onClose={handleClose} severity="error" sx={{ width: '200%' }}>
+                    You left the Room
                 </Alert>
             </Snackbar>
 

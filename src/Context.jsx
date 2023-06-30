@@ -3,7 +3,8 @@ import { createContext, useEffect, useReducer } from "react";
 const INITIAL_STATE = {
     user: JSON.parse(localStorage.getItem("user")) || null,
     isFetching: false,
-    error: false
+    error: false,
+    roomID: ""
 }
 
 export const Context = createContext(INITIAL_STATE);
@@ -34,6 +35,16 @@ const Reducer = (state, action) => {
                 isFetching: false,
                 error: false
             }
+        case "ROOMIN":
+            return {
+                ...state,
+                roomID: action.payload,
+            }
+        case "ROOMOUT":
+            return {
+                ...state,
+                roomID: "",
+            }
         default:
             return state;
     }
@@ -49,6 +60,7 @@ export const ContextProvider = ({ children }) => {
             user: state.user,
             isFetching: state.isFetching,
             error: state.error,
+            roomID: state.roomID,
             dispatch
         }}>
             {children}
