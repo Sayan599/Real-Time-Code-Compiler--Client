@@ -252,7 +252,7 @@ function Home() {
                                 <Button type="submit" variant="contained" style={{ backgroundColor: "green" }} onClick={handleJoinRoom}>
                                     JOIN ROOM
                                 </Button>
-                                <Button type="submit" variant="contained" style={{ scale: "80%", backgroundColor: "red" }} onClick={handleLeaveRoom}>
+                                <Button type="submit" variant="contained" style={{ height: "30px", scale: "80%", backgroundColor: "red" }} onClick={handleLeaveRoom}>
                                     Leave
                                 </Button>
                             </div>
