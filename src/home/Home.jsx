@@ -15,12 +15,23 @@ import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import Loader from '../components/loader/Loader';
 import { Context } from '../Context';
+import io from 'socket.io-client';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
+const socket = io.connect('http://localhost:2000', () => {
+    console.log("connected");
+});
+socket.on("connect", () => {
+    console.log(socket.id); // x8WIv7-mJelg7on_ALbx
+});
+console.log("Conection done");
+
 function Home() {
+
+
 
     const [open, setOpen] = React.useState(false);
 
@@ -40,6 +51,8 @@ function Home() {
 
     const [document, setDocument] = useState();
     const [trigger, setTrigger] = useState(0);
+
+    const [room, setRoom] = useState("");
 
     const { user, dispatch, isFetching } = useContext(Context);
 
@@ -161,6 +174,20 @@ function Home() {
         setTitle("");
     }
 
+    const handleJoinRoom = () => {
+        console.log("join");
+        socket.emit("join-room", room)
+    }
+
+
+    socket.emit("send_message", { message: code }, room);
+
+    useEffect(() => {
+        socket.on("receive_message", (data) => {
+            setCode(data.message);
+        })
+    }, [socket]);
+
     return (
         <div className="pageContainer" >
             <Sidebar reloader={refetch} changer={setChanger} trigger={trigger} />
@@ -205,9 +232,9 @@ function Home() {
                             </div>
                             <textarea disabled="true" className="consoleArea" style={{ fontSize: `${fontSizeConsole}px` }} placeholder={answer}></textarea>
                             <div className="roomBox">
-                                <label for="roomId" style={{marginBottom:"20px",letterSpacing:"2px"}}>Room Id : </label>
-                                <input type="number" ></input>
-                                 <Button type="submit" variant="contained" style={{ backgroundColor: "green" }}>
+                                <label for="roomId" style={{ marginBottom: "20px", letterSpacing: "2px" }}>Room Id : </label>
+                                <input type="number" onChange={(e) => setRoom(e.target.value)}></input>
+                                <Button type="submit" variant="contained" style={{ backgroundColor: "green" }} onClick={handleJoinRoom}>
                                     JOIN ROOM
                                 </Button>
                             </div>
